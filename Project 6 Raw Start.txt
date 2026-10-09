@@ -1,0 +1,65 @@
+import pygame
+import sys
+import random  # Required to generate random positions
+import asyncio
+import math
+from Spaceship import *
+# Initialize Pygame
+
+async def main():
+    pygame.init()
+
+    # Window Setup
+    WIDTH, HEIGHT = 800, 600
+    SHIP_SPEED = 4
+
+    font = pygame.font.SysFont(None, 24)
+
+    THRUST = 0.15
+    DRAG = 0.99
+    MAX_SPEED = 7
+
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption("Game")
+    clock = pygame.time.Clock()
+
+    player_sprite_surface = pygame.image.load("player.png").convert_alpha()
+    player_sprite_surface = pygame.transform.smoothscale(player_sprite_surface, (64, 64))
+
+    # Convert Raw Base64 string back into a Pygame Surface
+    player_sprite_surface = pygame.image.load("player.png").convert_alpha()
+    player_sprite_surface = pygame.transform.smoothscale(player_sprite_surface, (64,64))
+    player_sprite_surface = pygame.transform.rotate(player_sprite_surface, 270)
+
+    player = Spaceship(50,50)
+
+    # Main Game Loop
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+        player.update()
+
+        screen.fill((0,0,0))
+        player.draw(screen)
+        angle_text = font.render(f"Angle: {player.angle:.0f}",True,(255,255,255))
+        vector_text = font.render(f"Forward: ({player.get_forward_vector().x:.2f}, {player.get_forward_vector().y:.2f})",True,(255,255,255))
+        position_text = font.render(f"Position: ({player.position.x:.2f}, {player.position.y:.2f})",True,(255,255,255))
+        
+        screen.blit(angle_text, (20, 20))
+        screen.blit(vector_text, (20, 50))
+        screen.blit(position_text, (20, 80))
+        # Refresh Screen
+        pygame.display.flip()
+        clock.tick(60)
+        await asyncio.sleep(0)
+
+    pygame.quit()
+
+
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
